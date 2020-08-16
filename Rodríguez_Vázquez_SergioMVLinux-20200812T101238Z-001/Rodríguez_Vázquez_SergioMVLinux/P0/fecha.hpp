@@ -30,6 +30,7 @@ public:
     //Operador resta de una Fecha con un entero
     Fecha operator -(int dia) const;
 
+    const char *cadena() const;
     //Constantes estaticas de la clase
     static const int AnnoMinimo;
     static const int AnnoMaximo;
