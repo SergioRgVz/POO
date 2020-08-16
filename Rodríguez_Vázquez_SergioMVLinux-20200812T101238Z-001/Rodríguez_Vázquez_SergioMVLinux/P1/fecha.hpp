@@ -67,4 +67,7 @@ public:
         return (fecha1.dia() == fecha2.dia() && fecha1.mes() == fecha2.mes() && fecha1.anno() == fecha2.anno());
     }
 
+
+std::ostream &operator<<(std::ostream &os, const Fecha &F);
+std::istream &operator>>(std::istream &is, const Fecha &F);
 #endif //FECHA_HPP
