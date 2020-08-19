@@ -112,7 +112,7 @@ void mostrar_carro(std::ostream &os, const Usuario &U)
         << Cadena(59, '=') << std::endl;
 
     std::unordered_map<Articulo *, unsigned int>::iterator it;
-
++
     for (it = U.compra().begin(); it != U.compra().end(); ++it)
     {
         os << "   " << it->second << "   " << it->first << std::endl;
