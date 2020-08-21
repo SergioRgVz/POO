@@ -1,5 +1,9 @@
 #ifndef FECHA_HPP
 #define FECHA_HPP
+#include <ctime>
+#include <cstdio>
+#include <iostream>
+#include <cstring>
 
 class Fecha
 {
@@ -29,7 +33,9 @@ public:
 
 
     //Operador de conversion implicita a const char*
-    operator const char*() const;
+    //operator const char*() const;
+
+    const char *cadena() const;
 
     //Operador suma de una Fecha con un entero
     Fecha operator +(int dia) const;
@@ -51,7 +57,7 @@ public:
         char *info;
     };
     private:
-        int d, m, y;
+        int dia_, mes_, year_;
         void comprobar();
 };
     
@@ -69,5 +75,5 @@ public:
 
 
 std::ostream &operator<<(std::ostream &os, const Fecha &F);
-std::istream &operator>>(std::istream &is, const Fecha &F);
+std::istream &operator>>(std::istream &is, Fecha &F);
 #endif //FECHA_HPP
