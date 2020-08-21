@@ -12,19 +12,21 @@ class Cadena
         Cadena(const char* caracteres);
         Cadena(Cadena &&C);
 
-        Cadena &operator = (const Cadena& copia) noexcept;
-        Cadena &operator= (const char *cadena) noexcept;
+        Cadena &operator=(const Cadena& copia) noexcept;
+        Cadena &operator=(const char *cadena) noexcept;
         Cadena &operator=(Cadena &&C) noexcept;
-        Cadena& operator+=( const Cadena& copia) noexcept;
+        Cadena &operator+=( const Cadena& copia) noexcept;
 
         friend Cadena operator+(const Cadena& cad1, const Cadena& cad2);
 
         char& operator[](unsigned i);
         char operator[](unsigned i)const;
 
+
+
         const char *c_str() const noexcept;
-        char at(unsigned i) const noexcept;
-        char& at(unsigned i) noexcept;
+        char at(unsigned i) const;
+        char& at(unsigned i) ;
 
         Cadena substr(unsigned i, unsigned tam) const;
 
@@ -42,7 +44,7 @@ class Cadena
         const_reverse_iterator rbegin() const {return crbegin();}
         const_reverse_iterator crbegin() const {return const_reverse_iterator(end());}
 
-        iterator end() {return s_ + tam_};
+        iterator end() {return s_ + tam_;}
         const_iterator end() const {return cend();} //return s_ + tam_
         const_iterator cend() const {return s_ + tam_;}
         reverse_iterator rend() {return reverse_iterator(begin());}
@@ -52,6 +54,7 @@ class Cadena
         ~Cadena();
 
         private:
+            
             char *s_;
             unsigned tam_;
 };
