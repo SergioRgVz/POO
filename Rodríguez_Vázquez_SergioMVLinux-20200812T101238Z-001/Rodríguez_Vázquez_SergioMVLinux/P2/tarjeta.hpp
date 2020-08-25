@@ -1,18 +1,28 @@
 #ifndef TARJETA_HPP
 #define TARJETA_HPP
 
-#include "cadena.hpp"
+
 #include "fecha.hpp"
+#include "cadena.hpp"
 #include "usuario.hpp"
+#include "articulo.hpp"
+
+
 #include <iostream>
 #include <set>
 #include <cctype>
 
+class  Usuario;     //Predeclaracion, necesaria para arreglar includes circulares
+
+//CLASE NUMERO
 class Numero
 {
 public:
-    Numero(Cadena &numero);
 
+    //CONSTRUCTOR
+    Numero(const Cadena &numero);
+
+    //CONSTANTES
     enum Razon
     {
         LONGITUD,
@@ -20,22 +30,27 @@ public:
         NO_VALIDO
     };
 
+    //OPERADORES
+    friend bool operator<(const Numero &N1, const Numero &N2);
+    operator const char *() const noexcept {return numero_.c_str(); }
+
+
+    //CLASE INCORRECTO
     class Incorrecto
     {
     public:
-        Incorrecto(Razon r): razon_(r) {}
+        Incorrecto(const Numero::Razon r): razon_(r) {}
 
-        const Razon &razon() const noexcept {return razon_;}
+        Numero::Razon razon() const noexcept {return razon_;}
     private:
         Razon razon_;
     };
 
-    friend bool operator<(const Numero &N1, const Numero &N2);
+    //OBSERVADOR
+    const Cadena& num() const noexcept {return numero_;}
 
-    operator const char *() const noexcept {return numero_.c_str(); }
-
-    const Cadena &num() const noexcept {return numero_;}
-
+    //DESTRUCTOR
+    ~Numero();      //HAY QUE IMPLEMENTAR
 private:
     Cadena numero_;
     void eliminar_espacio(Cadena &cad);
@@ -45,6 +60,8 @@ private:
 class Tarjeta
 {
 public:
+
+    //CONSTANTES
     enum Tipo
     {
         Otro,
@@ -54,11 +71,14 @@ public:
         JCB,
         AmericanExpress
     };
-    
-    Tarjeta(Numero n, Usuario &u, Fecha c);
-    Tarjeta(const Tarjeta &T) = delete;
-    Tarjeta operator=(const Tarjeta &T) = delete;
 
+    //CONSTRUCTORES    
+    Tarjeta(const Numero &n, Usuario &u,const Fecha &c);
+    Tarjeta(const Tarjeta &T) = delete;
+    Tarjeta& operator=(const Tarjeta &T) = delete;
+
+
+    //CLASE CADUCADA
     class Caducada
     {
     public:
@@ -67,34 +87,53 @@ public:
 
     private:
         Fecha caduca_;
-    }
+    };
+
+    //CLASE DESACTIVADA
     class Desactivada
     {};
 
-    bool activa(bool a = true) noexcept;
+    //CLASE DUPLICADO
+     class Num_duplicado
+    {
+    public:
+        Num_duplicado(const Numero&);
+        const Numero& que() const;
+    private:
+        Numero numer_;
+    };
+
+    //FUNCIONES
+    bool &activa(bool a = true) noexcept;
     void anula_titular();
+    Tipo esTipo();
 
+    friend std::ostream& operator<<(std::ostream& os, const Tarjeta& T);
 
-    //Metodos observadores
-    Tipo tipo() const noexcept{return tipo_;}
-    Numero numero() const noexcept{return numero_;}
-    Fecha caducidad() const noexcept{return caducidad_;}
-    const Usuario *titular() const noexcept{return titular_;}
-    bool activa() const noexcept {return activa_;}
+    //OBSERVADORES
+    const Tarjeta::Tipo tipo() const noexcept{return tipo_;}
+    const Numero& numero() const noexcept{return numero_;}
+    const Fecha& caducidad() const noexcept{return caducidad_;}
+    Usuario *titular() const noexcept{return titular_;}
+    const bool activa() const noexcept {return activa_;}
 
+    //DESTRUCTOR
     ~Tarjeta();
+
 private:
     Tipo tipo_;
     Numero numero_;
-    const Usuario *titular_;
+    Usuario* const titular_;
     Fecha caducidad_;
     bool activa_;
-    static Numeros numeros_;
+    static Numero numeros_; //esto es de BJ
 };
+
 
 std::ostream &operator<<(std::ostream &os, const Tarjeta &T);
 std::ostream &operator<<(std::ostream &os, const Tarjeta::Tipo &T);
 
+bool operator<(const Numero &N1, const Numero &N2);
 bool operator<(const Tarjeta &T1, const Tarjeta &T2);
-
+bool operator>(const Tarjeta &T1, const Tarjeta &T2); //Hay que implementarla
 #endif //TARJETA_HPP
