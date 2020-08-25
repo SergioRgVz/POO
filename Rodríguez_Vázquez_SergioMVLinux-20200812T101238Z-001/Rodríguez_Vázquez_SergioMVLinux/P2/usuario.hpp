@@ -5,10 +5,13 @@
 #include "tarjeta.hpp"
 #include "articulo.hpp"
 #include <map>
+#include <set>
 #include <unordered_set>
 #include <unordered_map>
+#include <unistd.h>
 #include <iostream>
-
+class Numero;
+class Tarjeta;
 class Clave
 {
 public:
@@ -26,7 +29,7 @@ public:
     {
     public:
         Incorrecta(Razon r): razon_(r) {}
-        Razon razon() const noexcept {¶eturn razon_;}
+        Razon razon() const noexcept {return razon_;}
     private:
         Razon razon_;
     };
@@ -63,7 +66,7 @@ public:
 
     ~Usuario();
 
-    friend std::ostream &operator<<(std::ostream &os, const Usuario &os);
+    friend std::ostream &operator<<(std::ostream &os, const Usuario &U);
 
     class Id_duplicado
     {
@@ -73,7 +76,7 @@ public:
 
     private:
         Cadena id_;
-    }
+    };
 
 private:
     Cadena identificador_;
@@ -84,6 +87,7 @@ private:
     Tarjetas tarjetas_;
     Articulos articulos_;
     static Usuarios usuarios_;
+
 };
 
 void mostrar_carro(std::ostream &os, const Usuario &U);

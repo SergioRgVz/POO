@@ -3,12 +3,20 @@
 #include <unistd.h>
 #include <cstdlib>
 #include <utility>
+#include <string.h>
+#include <random>
+#include <iomanip>
+#include <set>
+
 
 #define caracteres "./123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
 Clave::Clave(const char *c)
 {
-    if(strlen(c) < 5) throw Clave::Incorrecta(Clave::CORTA);
+    /*
+    if(strlen(c) < 5){ 
+        std::cerr << "Corta" << std::endl;
+        throw Incorrecta(Clave::CORTA);}
 
     const char *seed = caracteres;
 
@@ -17,9 +25,20 @@ Clave::Clave(const char *c)
     salt[1] = seed[rand() % 64];
 
     if(crypt(c, salt)  == nullptr)
-        throw Clave::Incorrecta(Clave::ERROR_CRYPT);
+        throw Incorrecta(Clave::ERROR_CRYPT);
     
+    password_ = crypt(c, salt);    */
+    setlocale(LC_ALL, "");
+    if(strlen(c) < 5) throw Clave::Incorrecta(Clave::CORTA);
+
+    std::random_device r;
+    std::uniform_int_distribution<size_t> dist(0,63);
+    char const MD5chars[] = "./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    char salt[2] = {MD5chars[dist(r)], MD5chars[dist(r)]};
+
+    if(crypt(c, salt) == nullptr) throw Clave::Incorrecta(Clave::ERROR_CRYPT);
     password_ = crypt(c, salt);
+
 }
 
 bool Clave::verifica(const char *c) const
@@ -27,11 +46,11 @@ bool Clave::verifica(const char *c) const
     return (password_ == crypt(c, password_.c_str()));
 }
 
-Usuario:::Usuarios Usuario::usuarios_;
+Usuario::Usuarios Usuario::usuarios_;
 
-Usuario::Usuario(const Cadena &id, const Cadena &nombre, const Cadena &apell, const Cadena &direccion, const Clave &clave): id_(id), nombre_(nombre), apell_(apell), direccion_(direccion), contrasena_(clave)
+Usuario::Usuario(const Cadena &id, const Cadena &nombre, const Cadena &apell, const Cadena &direccion, const Clave &clave): identificador_(id), nombre_(nombre), apellidos_(apell), direccion_(direccion), contrasena_(clave)
 {
-    if(!usuarios.insert(id).second))
+    if(!usuarios_.insert(id).second)
         throw Id_duplicado(identificador_);
 }
 
@@ -61,7 +80,7 @@ void Usuario::compra(Articulo &A, unsigned cantidad)
         }
         else
         {
-            articulos_find(&A)->second = cantidad;
+            articulos_.find(&A)->second = cantidad;
         }
     }
 }
@@ -81,9 +100,22 @@ unsigned Usuario::n_articulos() const
 
 Usuario::~Usuario()
 {
-    for (auto &[numero, tarjeta] : tarjetas_)
+   /* for (auto &[numero_, tarjeta] : tarjetas_)
         tarjeta->anula_titular();
 
+    usuarios_.erase(identificador_);*/
+    /*Tarjetas::iterator it;
+
+    for(it = tarjetas_.begin(); it != tarjetas_.end(); it++)
+    {
+        it->second->anula_titular();
+    }
+    usuarios_.erase(identificador_); */
+
+    for(auto& i: tarjetas_)
+    {
+        i.second->anula_titular();
+    }
     usuarios_.erase(identificador_);
 }
 
@@ -112,7 +144,7 @@ void mostrar_carro(std::ostream &os, const Usuario &U)
         << Cadena(59, '=') << std::endl;
 
     std::unordered_map<Articulo *, unsigned int>::iterator it;
-+
+
     for (it = U.compra().begin(); it != U.compra().end(); ++it)
     {
         os << "   " << it->second << "   " << it->first << std::endl;
