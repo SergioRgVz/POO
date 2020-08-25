@@ -14,7 +14,7 @@ Cadena::Cadena(const Cadena &copia): s_(new char[copia.tam_ + 1]), tam_(copia.ta
     strcpy(s_,copia.s_);
 }
 
-Cadena::Cadena(const char *caracteres): s_(new char[copia.tam_ + 1]), tam_(std::strlen(caracteres))
+Cadena::Cadena(const char *caracteres): s_(new char[std::strlen(caracteres) + 1]), tam_(std::strlen(caracteres))
 {
     for(int i = 0; i <= tam_; i++)
         s_[i] = caracteres[i];
@@ -28,7 +28,7 @@ Cadena::Cadena(Cadena &&C): s_(C.s_), tam_(C.tam_)
 
 
 
-Cadena &Cadena::operator=(const Cadena &copia)
+Cadena &Cadena::operator=(const Cadena &copia) noexcept
 {
     if(this != &copia)
     {
@@ -39,12 +39,12 @@ Cadena &Cadena::operator=(const Cadena &copia)
             s_ = new char[tam_];
         }
     for(int i = 0; i <= tam_; i++)
-        s_[i] = copia-s_[i];
+        s_[i] = copia.s_[i];
     }
     return *this;
 }
 
-Cadena &Cadena::operator=(const char *cadena) 
+Cadena &Cadena::operator=(const char *cadena) noexcept
 {
     delete[] s_;
     tam_ = std::strlen(cadena);
@@ -55,7 +55,7 @@ Cadena &Cadena::operator=(const char *cadena)
     return *this;
 }
 
-Cadena &Cadena::operator=(Cadena &&C)
+Cadena &Cadena::operator=(Cadena &&C) noexcept
 {
     if(this != &C)
     {
@@ -75,18 +75,18 @@ char Cadena::operator[](unsigned i) const
     return *(s_ + i);
 }
 
-char Cadena::operator[](unsigned i)
+char& Cadena::operator[](unsigned i)
 {
     return *(s_ + i);
 }
 
-const char *Cadena::c_str() const
+const char *Cadena::c_str() const noexcept
 {
     return s_;
 }
 
 
-char Cadena::at(unsigned i) const
+char Cadena::at(unsigned i) const 
 {
     if(i >= tam_)
     {
@@ -131,17 +131,13 @@ Cadena Cadena::substr(unsigned i, unsigned tam) const
     }
 }
 
-unsigned Cadena::length() const
-{
-    return tam_;
-}
 
 Cadena::~Cadena()
 {
     delete[] s_;
 }
 
-Cadena& Cadena::operator+=(const Cadena &copia)
+Cadena& Cadena::operator+=(const Cadena &copia) noexcept
 {
     Cadena aux{*this};
     delete [] s_;
@@ -159,39 +155,55 @@ Cadena operator+(const Cadena &cad1, const Cadena &cad2)
     return aux;
 }
 
-Cadena::operator const char *() const
+/*Cadena::operator const char *() const
 {
     return s_;
-}
+}*/
 
-bool operator<(const Cadena &cad1, const Cadena &cad2)
+bool operator<(const Cadena &cad1, const Cadena &cad2) noexcept
 {
-    return(strcmp(cad1, cad2) < 0);
+    if(cad1.length() < cad2.length()) return true;
+    if(cad1.length() > cad2.length()) return false;
+
+    int last = cad1.length();
+    for(int i = 0; i < last; i++)
+    {
+    if ((static_cast<int>(cad1.at(i))) < (static_cast<int>(cad2.at(i)))) return true;
+    }
+
+    return false;
 }
 
-bool operator==(const Cadena &cad1, const Cadena &cad2)
+bool operator==(const Cadena &cad1, const Cadena &cad2) noexcept
 {
-    return(strcmp(cad1, cad2) == 0);
+    if(cad1.length() != cad2.length()) return false;
+    for(int i = 0; i < cad1.length(); i++)
+    {
+        if(cad1[i] != cad2[i]) return false;
+    }
+    return true;
 }
 
-bool operator!=(const Cadena &cad1, const Cadena &cad2)
+bool operator!=(const Cadena &cad1, const Cadena &cad2) noexcept
 {
     return !(cad1==cad2);
 }
 
-bool operator<=(const Cadena &cad1, const Cadena &cad2)
+bool operator<=(const Cadena &cad1, const Cadena &cad2) noexcept
 {
+    if(cad1 == cad2) return true;
     return !(cad2 < cad1);
 }
 
-bool operator>=(const Cadena &cad1, const Cadena &cad2)
+bool operator>=(const Cadena &cad1, const Cadena &cad2) noexcept
 {
+    if(cad1 == cad2) return true;
     return !(cad1 < cad2);
 }
 
-bool operator>(const Cadena &cad1, const Cadena &cad2)
+bool operator>(const Cadena &cad1, const Cadena &cad2) noexcept
 {
-    return cad2 < cad1;
+    return (cad2 < cad1);
 }
 
 std::ostream &operator<<(std::ostream &os, const Cadena &C)
