@@ -192,8 +192,10 @@ std::ostream &operator<<(std::ostream &os, const Tarjeta::Tipo &tipo)
 
 std::ostream &operator<<(std::ostream &os, const Tarjeta  &T)
 {
-    os
-    << T.tipo() << std::endl << T.numero() << std::endl;
+    
+    //std::cout << "Insercion #######################################################################" << std::endl;
+    os <<' ' << T.tipo() << std::endl << ' ' << T.numero() << std::endl;
+    //std::cout << T.tipo() << std::endl << T.numero() << std::endl;
 
     Cadena aux = T.titular()->nombre();
     int i = 0;
@@ -202,21 +204,23 @@ std::ostream &operator<<(std::ostream &os, const Tarjeta  &T)
         if(islower(aux[i])) aux[i] = toupper(aux[i]);
         i++;
     } 
-    os << aux << " ";
+    os << ' ' << aux << " ";
+    //std::cout << aux << " ";
 
     i = 0;
-
-    aux = T.titular()->apellidos();
-    while ((aux[i]= '\0'))
+    Cadena aux1 = T.titular()->apellidos();
+    // aux = T.titular()->apellidos();
+    while (aux1[i] != '\0')
     {
-        if(islower(aux[i])) aux[i] = toupper(aux[i]);
+        if(islower(aux1[i])) aux1[i] = toupper(aux1[i]);
         i++;        
     }
     
-    os << aux << std::endl;
+    os << aux1 << std::endl;
+   // std::cout << aux << std::endl;
    
-    os
-    << "Caduca: " << std::setfill('0') << std::setw(2) << T.caducidad().mes() << '/' << std::setw(2) << (T.caducidad().anno() % 100) << std::endl;
+    os <<' ' << "Caduca: " << std::setfill('0') << std::setw(2) << T.caducidad().mes() << '/' << std::setw(2) << (T.caducidad().anno() % 100) << std::endl;
+   // std::cout << "Caduca: " << std::setfill('0') << std::setw(2) << T.caducidad().mes() << '/' << std::setw(2) << (T.caducidad().anno() % 100) << std::endl;
 
     return os;
 }

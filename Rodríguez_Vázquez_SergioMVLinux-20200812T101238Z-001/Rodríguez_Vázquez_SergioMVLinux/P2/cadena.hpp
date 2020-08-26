@@ -7,12 +7,10 @@
 class Cadena
 {
     public:
-        //CONSTRUCTORES
         explicit Cadena(unsigned n = 0, char relleno = ' ');
         Cadena(const Cadena& copia);
         Cadena(const char* caracteres);
-        Cadena(Cadena &&C);         //Constructor de movimiento
-
+        Cadena(Cadena &&C);
 
         Cadena &operator=(const Cadena& copia) noexcept;
         Cadena &operator=(const char *cadena) noexcept;
@@ -31,7 +29,7 @@ class Cadena
         char& at(unsigned i) ;
 
         Cadena substr(unsigned i, unsigned tam) const;
-
+        //Cadena substr(size_t base, size_t desp) const;
         unsigned length() const noexcept {return tam_;}
 
         typedef char *iterator;
@@ -53,8 +51,6 @@ class Cadena
         const_reverse_iterator rend() const {return crend();}
         const_reverse_iterator crend() const {return const_reverse_iterator(begin());}        
 
-
-        //DESTRUCTOR
         ~Cadena();
 
         private:

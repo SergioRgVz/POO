@@ -51,12 +51,12 @@ public:
 
     Usuario &operator=(const Usuario &U) = delete;
 
-    Cadena id() const noexcept {return identificador_;}
-    Cadena nombre() const noexcept {return nombre_;}
-    Cadena apellidos() const noexcept {return apellidos_;}
-    Cadena direccion() const noexcept {return direccion_;}
-    Tarjetas tarjetas() const noexcept {return tarjetas_;}
-    Articulos compra() const noexcept {return articulos_;}
+    const Cadena &id() const noexcept {return identificador_;}
+    const Cadena &nombre() const noexcept {return nombre_;}
+    const Cadena &apellidos() const noexcept {return apellidos_;}
+    const Cadena &direccion() const noexcept {return direccion_;}
+    const Tarjetas& tarjetas() const noexcept {return tarjetas_;} //TODO:, comprobar porque falla de la forma que estaba hecha la insercion de flujo
+    const Articulos & compra() const noexcept {return articulos_;}
 
     unsigned n_articulos() const;
 

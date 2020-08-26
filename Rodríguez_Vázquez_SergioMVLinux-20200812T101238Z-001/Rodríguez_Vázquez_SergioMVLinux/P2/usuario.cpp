@@ -76,6 +76,7 @@ void Usuario::compra(Articulo &A, unsigned cantidad)
     {
         if(articulos_.find(&A) == articulos_.end())
         {
+            // std::cout<<A<<std::endl;
             articulos_.insert(std::pair<Articulo *, unsigned>(&A, cantidad));
         }
         else
@@ -88,9 +89,9 @@ void Usuario::compra(Articulo &A, unsigned cantidad)
 unsigned Usuario::n_articulos() const
 {
     unsigned cont = 0;
-    std::unordered_map<Articulo *, unsigned int>::iterator it;
+    // std::unordered_map<Articulo *, unsigned int>::iterator it;
 
-    for (it = this->compra().begin(); it != articulos_.end(); ++it)
+    for (auto it = this->compra().begin(); it != articulos_.end(); ++it)
     {
         cont++;
     }
@@ -111,7 +112,6 @@ Usuario::~Usuario()
         it->second->anula_titular();
     }
     usuarios_.erase(identificador_); */
-
     for(auto& i: tarjetas_)
     {
         i.second->anula_titular();
@@ -121,16 +121,20 @@ Usuario::~Usuario()
 
 std::ostream &operator<<(std::ostream &os, const Usuario &U)
 {
-    os
+        os
         << U.id() << " [" << U.contrasena_.clave().c_str() << "] " << U.nombre() << " " << U.apellidos() << std::endl
         << U.direccion() << std::endl
-        << "Tarjetas:" << std::endl;
+        << "Tarjetas: " << std::endl;
 
-    std::map<Numero, Tarjeta *>::iterator it;
 
-    for (it = U.tarjetas().begin(); it != U.tarjetas().end(); ++it)
+    // std::map<Numero, Tarjeta *>::iterator it;
+
+    for (auto it = U.tarjetas_.begin(); it != U.tarjetas_.end(); it++)
     {
-        os << it->second;
+
+       // std::cout << U.tarjetas_.size();
+       // std::cout << (*it).second;
+        os << *(it->second )<< std::endl;
     }
 
     return os;
@@ -143,10 +147,15 @@ void mostrar_carro(std::ostream &os, const Usuario &U)
         << " Cant. Artículo" << std::endl
         << Cadena(59, '=') << std::endl;
 
-    std::unordered_map<Articulo *, unsigned int>::iterator it;
 
-    for (it = U.compra().begin(); it != U.compra().end(); ++it)
+    //std::unordered_map<Articulo *, unsigned int>::iterator it;
+        // std::cout << "Mostrar carro " << U.compra().size() << std::endl;
+
+    for (auto it = U.compra().begin(); it != U.compra().end(); it++)
     {
-        os << "   " << it->second << "   " << it->first << std::endl;
+        // std::cout << "   " << it->second << "   " << it->first << std::endl;
+
+
+       os << "   " << it->second << "   " << *(it->first) << std::endl;
     }
 }

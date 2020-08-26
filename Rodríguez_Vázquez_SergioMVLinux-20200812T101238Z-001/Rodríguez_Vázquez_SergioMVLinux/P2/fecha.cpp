@@ -1,7 +1,21 @@
 #include "fecha.hpp"
 
+void Fecha::comprobar()
+{
+    int diaDelMes[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if (year_ < AnnoMinimo)
+        throw Invalida{"Año invalido, menor que el año minimo. "};
+    if (year_ > AnnoMaximo)
+        throw Invalida{"Año invalido, mayor que el año maximo."};
+    bool bisiesto = year_ % 4 == 0 && (year_ % 400 == 0 || year_ % 100 != 0);
+    if (mes_ <= 0 || mes_ > 12)
+        throw Invalida{"Mes invalido, no cumple el formato."};
+    if (bisiesto)
+        diaDelMes[1]++;
+    if (dia_ <= 0 || dia_ > diaDelMes[mes_ - 1])
+        throw Invalida{"Dia invalido, no cumple el formato."};
+}
 
-//CONSTRUCTORES DE LA CLASE FECHA
 Fecha::Fecha(int dia, int mes, int anno): dia_(dia), mes_(mes), year_(anno)
 {
     std::time_t calendario = std::time(nullptr);
@@ -15,7 +29,6 @@ Fecha::Fecha(int dia, int mes, int anno): dia_(dia), mes_(mes), year_(anno)
     comprobar();  
 }
 
-//Constructor desde una cadena de caracteres
 Fecha::Fecha(const char *fecha)
 {
     std::time_t tiempo_actual = std::time(0);
@@ -33,10 +46,69 @@ Fecha::Fecha(const char *fecha)
 
     comprobar();
 }
+int Fecha::dia() const noexcept{return dia_;}
+int Fecha::mes() const noexcept{return mes_;}
+int Fecha::anno() const noexcept{return year_;}
 
+Fecha &Fecha::operator+=(int dia)
+{
+    std::tm estructura{0,0,0, dia_ + dia, mes_ - 1, year_ - 1900};
+    estructura.tm_isdst = 0;
+    std::mktime(&estructura);
+    dia_ = estructura.tm_mday;
+    mes_ = estructura.tm_mon + 1;
+    year_ = estructura.tm_year + 1900;
+    comprobar();
+    return *this;
+}
 
-//Operador de conversion a const char desde fecha
-const char* Fecha::cadena() const 
+Fecha &Fecha::operator-=(int dia)
+{
+    *this += (-dia);
+    return *this;
+}
+
+Fecha Fecha::operator+(int dia) const
+{
+    Fecha aux{*this};
+    aux += dia;
+    return aux;
+}
+
+Fecha Fecha::operator-(int dia) const
+{
+    Fecha aux(*this);
+    aux += (-dia);
+    return aux;
+}
+
+Fecha Fecha::operator++(int)
+{
+    Fecha aux(*this);
+    *this += 1;
+    return aux;
+}
+
+Fecha &Fecha::operator++()
+{
+    *this += 1;
+    return *this;
+}
+
+Fecha Fecha::operator--(int)
+{
+    Fecha aux(*this);
+    *this += (-1);
+    return aux;
+}
+
+Fecha &Fecha::operator--()
+{
+    *this += (-1);
+    return *this;
+}
+
+const char* Fecha::cadena() const
 {
     /*
     static char cadena[40];
@@ -64,104 +136,6 @@ const char* Fecha::cadena() const
 
    return buffer;
 }
-
-//OBSERVADORES DE LA CLASE
-int Fecha::dia() const noexcept{return dia_;}
-int Fecha::mes() const noexcept{return mes_;}
-int Fecha::anno() const noexcept{return year_;}
-
-
-//Clase anidada Invalida que es la excepcion lanzada cuando la fecha es invalida
-Fecha::Invalida::Invalida(const char *cadena): info(new char[std::strlen(cadena) + 1])
-{
-    std::strcpy(info, cadena);
-}
-//Metodo de la clase anidada Invalida
-const char *Fecha::Invalida::por_que() const
-{
-    return info;
-}
-
-//OPERADORES DE LA CLASE
-Fecha &Fecha::operator+=(int dia)
-{
-    std::tm estructura{0,0,0, dia_ + dia, mes_ - 1, year_ - 1900};
-    estructura.tm_isdst = 0;
-    std::mktime(&estructura);
-    dia_ = estructura.tm_mday;
-    mes_ = estructura.tm_mon + 1;
-    year_ = estructura.tm_year + 1900;
-    comprobar();
-    return *this;
-}
-
-Fecha &Fecha::operator-=(int dia)
-{
-    *this += (-dia);
-    return *this;
-}
-
-Fecha Fecha::operator--(int)
-{
-    Fecha aux(*this);
-    *this += (-1);
-    return aux;
-}
-
-Fecha &Fecha::operator--()
-{
-    *this += (-1);
-    return *this;
-}
-
-Fecha Fecha::operator++(int)
-{
-    Fecha aux(*this);
-    *this += 1;
-    return aux;
-}
-
-Fecha &Fecha::operator++()
-{
-    *this += 1;
-    return *this;
-}
-
-Fecha Fecha::operator+(int dia) const
-{
-    Fecha aux{*this};
-    aux += dia;
-    return aux;
-}
-
-Fecha Fecha::operator-(int dia) const
-{
-    Fecha aux(*this);
-    aux += (-dia);
-    return aux;
-}
-
-//METODO PRIVADO DE LA CLASE
-void Fecha::comprobar()
-{
-    int diaDelMes[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    if (year_ < AnnoMinimo)
-        throw Invalida{"Año invalido, menor que el año minimo. "};
-    if (year_ > AnnoMaximo)
-        throw Invalida{"Año invalido, mayor que el año maximo."};
-    bool bisiesto = year_ % 4 == 0 && (year_ % 400 == 0 || year_ % 100 != 0);
-    if (mes_ <= 0 || mes_ > 12)
-        throw Invalida{"Mes invalido, no cumple el formato."};
-    if (bisiesto)
-        diaDelMes[1]++;
-    if (dia_ <= 0 || dia_ > diaDelMes[mes_ - 1])
-        throw Invalida{"Dia invalido, no cumple el formato."};
-}
-
-
-
-
-//OPERADORES LOGICOS
 bool operator<(const Fecha &fecha1, const Fecha &fecha2)
 {
     bool valor = false;
@@ -204,7 +178,7 @@ bool operator>=(const Fecha &fecha1, const Fecha &fecha2)
 //Operador de conversion a const char*
 Fecha::operator const char *() const
 {
-    setlocale(LC_ALL,""); //Cambiamos a la region local del ordenador
+    /*setlocale(LC_ALL,""); //Cambiamos a la region local del ordenador
     static char *cadenita = new char[80];
     std::tm descompuesto{0, 0, 0, dia_, mes_ - 1, year_ - 1900};
     mktime(&descompuesto);
@@ -221,9 +195,18 @@ Fecha::operator const char *() const
     return aux;   
 }
 */
+//Clase anidada Invalida que es la excepcion lanzada cuando la fecha es invalida
+Fecha::Invalida::Invalida(const char *cadena):   info(cadena)
+{
+   
+    // std::strcpy(info, cadena);
+}
 
+const char *Fecha::Invalida::por_que() const
+{
+    return info;
+}
 
-//OPERADORES DE FLUJO ENTRADA-SALIDA
 std::ostream &operator<<(std::ostream &os, const Fecha &F)
 {
     os << F.cadena();
@@ -234,7 +217,6 @@ std::ostream &operator<<(std::ostream &os, const Fecha &F)
 std::istream &operator>>(std::istream &is, Fecha &F)
 {
    char fecha[11];
-
     is.getline(fecha, 11);
 
     try{
