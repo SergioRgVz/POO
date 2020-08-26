@@ -29,7 +29,7 @@ class Cadena
         char& at(unsigned i) ;
 
         Cadena substr(unsigned i, unsigned tam) const;
-
+        //Cadena substr(size_t base, size_t desp) const;
         unsigned length() const noexcept {return tam_;}
 
         typedef char *iterator;

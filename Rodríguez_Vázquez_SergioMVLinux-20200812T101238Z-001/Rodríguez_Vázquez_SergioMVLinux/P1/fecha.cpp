@@ -196,9 +196,10 @@ Fecha::operator const char *() const
 }
 */
 //Clase anidada Invalida que es la excepcion lanzada cuando la fecha es invalida
-Fecha::Invalida::Invalida(const char *cadena): info(new char[std::strlen(cadena) + 1])
+Fecha::Invalida::Invalida(const char *cadena):   info(cadena)
 {
-    std::strcpy(info, cadena);
+   
+    // std::strcpy(info, cadena);
 }
 
 const char *Fecha::Invalida::por_que() const
@@ -216,7 +217,6 @@ std::ostream &operator<<(std::ostream &os, const Fecha &F)
 std::istream &operator>>(std::istream &is, Fecha &F)
 {
    char fecha[11];
-
     is.getline(fecha, 11);
 
     try{

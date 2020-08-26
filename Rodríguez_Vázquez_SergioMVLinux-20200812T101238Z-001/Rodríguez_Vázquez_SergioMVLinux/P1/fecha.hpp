@@ -52,9 +52,10 @@ public:
     {
     public:
         Invalida(const char *cadena);
+          //~Invalida(){ delete[] info;};
         const char *por_que() const;
     private:
-        char *info;
+        const char *info;
     };
     private:
         int dia_, mes_, year_;
