@@ -1,12 +1,12 @@
-#ifndef PEDIDo_HPP
+#ifndef PEDIDO_HPP
 #define PEDIDO_HPP
 
 #include "usuario.hpp"
 #include "tarjeta.hpp"
 #include "fecha.hpp"
 #include "articulo.hpp"
-#include "pedido_articulo.hpp"
-#include "usuario_pedido.hpp"
+#include "pedido-articulo.hpp"
+#include "usuario-pedido.hpp"
 #include <iomanip>
 #include <iostream>
 
@@ -59,7 +59,6 @@ private:
     Fecha fpedido_; //Fecha del pedido
     double importe_; //importe del pedido
     static unsigned N_pedidos; //Numero de pedidos hechos
-
 };
 
 std::ostream& operator <<(std::ostream& os, const Pedido& P);

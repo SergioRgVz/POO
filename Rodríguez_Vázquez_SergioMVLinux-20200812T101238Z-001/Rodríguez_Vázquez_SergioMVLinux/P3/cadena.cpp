@@ -4,7 +4,7 @@
 
 Cadena::Cadena(unsigned n, char relleno): s_(new char[n + 1]), tam_(n)
 {
-    for(int i = 0; i < tam_; i++)
+    for(unsigned int i = 0; i < tam_; i++)
         s_[i] = relleno;
     s_[tam_] = '\0';
 }
@@ -16,7 +16,7 @@ Cadena::Cadena(const Cadena &copia): s_(new char[copia.tam_ + 1]), tam_(copia.ta
 
 Cadena::Cadena(const char *caracteres): s_(new char[std::strlen(caracteres) + 1]), tam_(std::strlen(caracteres))
 {
-    for(int i = 0; i <= tam_; i++)
+    for(unsigned int i = 0; i <= tam_; i++)
         s_[i] = caracteres[i];
 }
 
@@ -36,11 +36,14 @@ Cadena &Cadena::operator=(const Cadena &copia) noexcept
         {
             delete[] s_;
             tam_ = copia.tam_;
-            s_ = new char[tam_];
-        }
-    for(int i = 0; i <= tam_; i++)
+            // s_=tam_>0?new char[tam_]: (char*) nullptr;
+        s_=new char[tam_+1 ];
+        }  
+    for(unsigned int i = 0; i < tam_; i++)
         s_[i] = copia.s_[i];
     }
+    s_[tam_] = '\0';
+
     return *this;
 }
 
@@ -116,20 +119,35 @@ Cadena Cadena::substr(unsigned i, unsigned tam) const
         throw std::out_of_range{"Indice fuera del rango. "};
     else
     {
-        int carposibles = tam_ - i;
+        unsigned int carposibles = tam_ - i;
         if(carposibles < tam)
             throw std::out_of_range{"Numero de caracteres se salen del limite. "};
         else
         {
-            Cadena c{tam};
-            for(int j = 0; j < c.tam_; j++)
-                c.s_[j] = s_[i + j];
-            c.s_[tam_] = '\0';
+
+            //std::cout << std::endl << tam_ << std::endl;
+            
+            Cadena c(tam );
+            //std::cout << c.length() << std::endl;
+            for(unsigned int j = 0; j < tam; j++)
+                c[j] = s_[i + j];
+           //c.at(tam_) = '\0'; //TODO  COMPROBAR LOS 0 EN LAS CADENAS
             return c;
         }
         
     }
 }
+// Cadena Cadena::substr(size_t base, size_t desp) const{
+// 	if(base + desp > tam_ || tam_ - desp < desp)
+// 		throw std::out_of_range("Acceso a memoria sobrepasado al crear una subcadena.");
+// 	Cadena aux(desp);
+// 	unsigned long i = 0;
+// 	while(i < desp){
+// 		aux[i] = s_[base + i];
+// 		i++;
+// 	}
+// 	return aux;
+// }
 
 
 Cadena::~Cadena()
@@ -177,7 +195,7 @@ bool operator<(const Cadena &cad1, const Cadena &cad2) noexcept
 bool operator==(const Cadena &cad1, const Cadena &cad2) noexcept
 {
     if(cad1.length() != cad2.length()) return false;
-    for(int i = 0; i < cad1.length(); i++)
+    for(unsigned int i = 0; i < cad1.length(); i++)
     {
         if(cad1[i] != cad2[i]) return false;
     }

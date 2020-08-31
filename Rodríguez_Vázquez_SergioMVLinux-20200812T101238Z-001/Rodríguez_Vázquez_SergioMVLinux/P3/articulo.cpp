@@ -15,7 +15,7 @@ Articulo::Articulo(const Cadena& referencia, const Cadena& titulo, const Fecha &
 //OPERADOR SALIDA
 std::ostream &operator<<(std::ostream &os, const Articulo &A) noexcept
 {
-    os << "[" << A.referencia() << "]\"" << A.titulo() << "\", " << A.f_publi().anno() << ". " << A.precio() << " €";
+    os << "[" << A.referencia() << "] \"" << A.titulo() << "\", " << A.f_publi().anno() << ". " <<std::fixed << std::setprecision(2)<< A.precio() << " €";
 
     return os;
 }
